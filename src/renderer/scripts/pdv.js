@@ -32,6 +32,11 @@ const qtyModal = document.getElementById('qty-modal');
 const discountModal = document.getElementById('discount-modal');
 const removeModal = document.getElementById('remove-modal');
 const stockAlertModal = document.getElementById('stock-alert-modal');
+const printModal = document.getElementById('print-modal');
+const printErrorModal = document.getElementById('print-error-modal');
+
+// State for printing
+let lastSaleData = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -141,6 +146,18 @@ function setupEventListeners() {
   document.getElementById('btn-close-stock-alert').addEventListener('click', closeStockAlertModal);
   document.getElementById('btn-ok-stock-alert').addEventListener('click', closeStockAlertModal);
   stockAlertModal.querySelector('.modal-overlay').addEventListener('click', closeStockAlertModal);
+
+  // Print Modal
+  document.getElementById('btn-close-print').addEventListener('click', closePrintModal);
+  document.getElementById('btn-skip-print').addEventListener('click', closePrintModal);
+  document.getElementById('btn-confirm-print').addEventListener('click', confirmPrint);
+  printModal.querySelector('.modal-overlay').addEventListener('click', closePrintModal);
+
+  // Print Error Modal
+  document.getElementById('btn-close-print-error').addEventListener('click', closePrintErrorModal);
+  document.getElementById('btn-ok-print-error').addEventListener('click', closePrintErrorModal);
+  document.getElementById('btn-retry-print').addEventListener('click', retryPrint);
+  printErrorModal.querySelector('.modal-overlay').addEventListener('click', closePrintErrorModal);
 
   // Keyboard shortcuts
   document.addEventListener('keydown', handleKeyboardShortcuts);
@@ -578,7 +595,25 @@ async function finalizeSale() {
       return;
     }
 
-    // Success - clear cart and show message
+    // Prepare sale data for receipt
+    const total = getTotal();
+    const paid = parseMoneyInput(amountPaid.value);
+    const change = paid > 0 ? Math.max(0, paid - total) : 0;
+
+    lastSaleData = {
+      items: cart.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        salePrice: item.salePrice,
+        subtotal: item.subtotal
+      })),
+      total: total,
+      discount: discountPercent,
+      amountPaid: paid > 0 ? paid : undefined,
+      change: paid > 0 ? change : undefined
+    };
+
+    // Clear cart
     cart = [];
     selectedItemIndex = -1;
     discountPercent = 0;
@@ -586,8 +621,9 @@ async function finalizeSale() {
 
     renderCart();
     updateTotal();
-    showToast('Venda realizada com sucesso!', 'success');
-    barcodeInput.focus();
+
+    // Show print modal with receipt preview
+    await showPrintModal();
   } catch (error) {
     showToast('Erro ao finalizar venda', 'error');
     console.error('Error finalizing sale:', error);
@@ -672,4 +708,105 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+// ========================================
+// Print Modal Functions
+// ========================================
+
+/**
+ * Show print modal with receipt preview
+ */
+async function showPrintModal() {
+  if (!lastSaleData) {
+    showToast('Dados da venda nao disponiveis', 'error');
+    return;
+  }
+
+  try {
+    // Get receipt preview
+    const result = await window.api.printer.preview(lastSaleData);
+
+    if (result.success && result.preview) {
+      document.getElementById('receipt-preview').textContent = result.preview.text;
+    } else {
+      document.getElementById('receipt-preview').textContent = 'Erro ao gerar pre-visualizacao';
+    }
+
+    printModal.classList.remove('hidden');
+  } catch (error) {
+    console.error('Error getting receipt preview:', error);
+    document.getElementById('receipt-preview').textContent = 'Erro ao gerar pre-visualizacao';
+    printModal.classList.remove('hidden');
+  }
+}
+
+/**
+ * Close print modal
+ */
+function closePrintModal() {
+  printModal.classList.add('hidden');
+  lastSaleData = null;
+  barcodeInput.focus();
+}
+
+/**
+ * Confirm print action
+ */
+async function confirmPrint() {
+  if (!lastSaleData) {
+    closePrintModal();
+    return;
+  }
+
+  const btnPrint = document.getElementById('btn-confirm-print');
+  btnPrint.disabled = true;
+  btnPrint.textContent = 'Imprimindo...';
+
+  try {
+    const result = await window.api.printer.print(lastSaleData);
+
+    if (result.success) {
+      showToast('Cupom enviado para impressao', 'success');
+      closePrintModal();
+    } else {
+      // Show error modal
+      document.getElementById('print-error-message').textContent =
+        result.error || 'Nao foi possivel imprimir o cupom.';
+      printModal.classList.add('hidden');
+      printErrorModal.classList.remove('hidden');
+    }
+  } catch (error) {
+    console.error('Error printing receipt:', error);
+    document.getElementById('print-error-message').textContent = 'Erro ao enviar para impressora.';
+    printModal.classList.add('hidden');
+    printErrorModal.classList.remove('hidden');
+  } finally {
+    btnPrint.disabled = false;
+    btnPrint.textContent = 'Imprimir Cupom';
+  }
+}
+
+/**
+ * Close print error modal
+ */
+function closePrintErrorModal() {
+  printErrorModal.classList.add('hidden');
+  lastSaleData = null;
+  barcodeInput.focus();
+}
+
+/**
+ * Retry print action
+ */
+async function retryPrint() {
+  printErrorModal.classList.add('hidden');
+
+  if (lastSaleData) {
+    await showPrintModal();
+    await confirmPrint();
+  } else {
+    showToast('Dados da venda nao disponiveis para reimprimir', 'error');
+    barcodeInput.focus();
+  }
 }

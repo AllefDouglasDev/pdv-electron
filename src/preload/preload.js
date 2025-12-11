@@ -58,6 +58,16 @@ contextBridge.exposeInMainWorld('api', {
     verifyIntegrity: (filename) => ipcRenderer.invoke('backup:verifyIntegrity', filename)
   },
 
+  // Printer
+  printer: {
+    getPrinters: () => ipcRenderer.invoke('printer:getPrinters'),
+    getDefaultPrinter: () => ipcRenderer.invoke('printer:getDefaultPrinter'),
+    print: (saleData, receiptConfig, printOptions) => ipcRenderer.invoke('printer:print', { saleData, receiptConfig, printOptions }),
+    preview: (saleData, receiptConfig) => ipcRenderer.invoke('printer:preview', { saleData, receiptConfig }),
+    test: (printerName) => ipcRenderer.invoke('printer:test', printerName),
+    getConfig: () => ipcRenderer.invoke('printer:getConfig')
+  },
+
   // Navigation
   navigate: (page) => ipcRenderer.invoke('navigate', page)
 });

@@ -38,16 +38,16 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 | 07 - Backup e Resiliência | Completo | 100% |
 | 08 - Banco de Dados | Completo | 100% |
 | 09 - Cálculos de Negócio | Completo | 100% |
-| 10 - Impressão de Cupom | Não Iniciado | 0% |
+| 10 - Impressão de Cupom | Completo | 100% |
 | 11 - Segurança | Não Iniciado | 0% |
 
 ---
 
 ## Estágio Atual
 
-**Módulo em Desenvolvimento:** 07 - Backup e Resiliência
+**Módulo em Desenvolvimento:** 10 - Impressão de Cupom
 **Status:** Completo
-**Próximo Passo:** Implementar Módulo 10 (Impressão de Cupom) ou Módulo 11 (Segurança)
+**Próximo Passo:** Implementar Módulo 11 (Segurança)
 
 ---
 
@@ -299,15 +299,15 @@ Funções de cálculo. Docs: `docs/09-calculos-negocio.md`
 Cupom fiscal. Docs: `docs/10-impressao-cupom.md`
 
 ### Tarefas
-- [ ] Criar módulo de impressão
-- [ ] Formatar para impressora térmica (80mm)
-- [ ] Incluir cabeçalho com nome da loja
-- [ ] Listar produtos vendidos
-- [ ] Incluir total, data/hora
-- [ ] Incluir mensagem de agradecimento
-- [ ] Integrar com impressora do sistema
+- [x] Criar módulo de impressão
+- [x] Formatar para impressora térmica (80mm)
+- [x] Incluir cabeçalho com nome da loja
+- [x] Listar produtos vendidos
+- [x] Incluir total, data/hora
+- [x] Incluir mensagem de agradecimento
+- [x] Integrar com impressora do sistema
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/main/services/printer.js`
 - `src/main/services/receipt.js`
 
@@ -518,3 +518,25 @@ Implementações de segurança. Docs: `docs/11-seguranca.md`
 - Atualizado dashboard com botão de Backup no menu
 
 **Próximos passos:** Implementar Módulo 10 (Impressão de Cupom) ou Módulo 11 (Segurança)
+
+### Sessão 10 - 2025-12-11
+- Criado serviço de formatação de cupom (receipt.js) com:
+  - Funções de formatação (truncar, alinhar, centralizar)
+  - Geração de cupom em texto para impressora térmica
+  - Suporte a papel de 80mm e 58mm
+  - Formatação de moeda brasileira
+  - Remoção de acentos para compatibilidade
+- Criado serviço de impressão (printer.js) com:
+  - Listagem de impressoras disponíveis
+  - Impressão via Electron print API
+  - Geração de HTML para impressão
+  - Função de teste de impressora
+- Adicionados IPC handlers para impressão no main.js
+- Atualizado preload.js com API de impressão
+- Atualizado PDV (pdv.html, pdv.css, pdv.js) com:
+  - Modal de pré-visualização do cupom após venda
+  - Modal de erro de impressão com opção de retry
+  - Opção de imprimir ou pular impressão
+  - Integração com serviço de impressão
+
+**Próximos passos:** Implementar Módulo 11 (Segurança)

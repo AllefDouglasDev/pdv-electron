@@ -7,6 +7,8 @@ const productsService = require('./services/products');
 const salesService = require('./services/sales');
 const reportsService = require('./services/reports');
 const backupService = require('./services/backup');
+const receiptService = require('./services/receipt');
+const printerService = require('./services/printer');
 
 let mainWindow;
 
@@ -328,4 +330,82 @@ ipcMain.handle('backup:verifyIntegrity', (event, filename) => {
   const path = require('path');
   const filePath = path.join(backupDir, filename);
   return backupService.verifyIntegrity(filePath);
+});
+
+// IPC Handlers for Printing
+ipcMain.handle('printer:getPrinters', async () => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  try {
+    const printers = await printerService.getPrinters(mainWindow);
+    return { success: true, printers };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('printer:getDefaultPrinter', async () => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  try {
+    const printer = await printerService.getDefaultPrinter(mainWindow);
+    return { success: true, printer };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('printer:print', async (event, { saleData, receiptConfig, printOptions }) => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  try {
+    // Add operator name from session
+    const session = authService.getSession();
+    const saleDataWithOperator = {
+      ...saleData,
+      operatorName: saleData.operatorName || session?.fullName || session?.username || 'Operador'
+    };
+    return await printerService.printSaleReceipt(saleDataWithOperator, receiptConfig, printOptions);
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('printer:preview', (event, { saleData, receiptConfig }) => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  try {
+    // Add operator name from session
+    const session = authService.getSession();
+    const saleDataWithOperator = {
+      ...saleData,
+      operatorName: saleData.operatorName || session?.fullName || session?.username || 'Operador'
+    };
+    const preview = receiptService.generateReceiptPreview(saleDataWithOperator, receiptConfig);
+    return { success: true, preview };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('printer:test', async (event, printerName) => {
+  if (!authService.isAdmin()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  try {
+    return await printerService.testPrinter(printerName);
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('printer:getConfig', () => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return { success: true, config: receiptService.getDefaultConfig() };
 });

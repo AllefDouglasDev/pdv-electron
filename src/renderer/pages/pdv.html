@@ -166,6 +166,47 @@
       </div>
     </div>
 
+    <!-- Modal for Print Receipt -->
+    <div id="print-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-medium">
+        <div class="modal-header success-header">
+          <h2>Venda Finalizada!</h2>
+          <button id="btn-close-print" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="success-message">Venda registrada com sucesso!</p>
+          <div class="receipt-preview-container">
+            <h3>Pre-visualizacao do Cupom:</h3>
+            <pre id="receipt-preview" class="receipt-preview"></pre>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-skip-print" class="btn btn-secondary">Nao Imprimir</button>
+          <button type="button" id="btn-confirm-print" class="btn btn-primary">Imprimir Cupom</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Print Error -->
+    <div id="print-error-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header warning-header">
+          <h2>Erro de Impressao</h2>
+          <button id="btn-close-print-error" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="print-error-message">Nao foi possivel imprimir o cupom.</p>
+          <p class="info-text">A venda foi registrada normalmente.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-retry-print" class="btn btn-secondary">Tentar Novamente</button>
+          <button type="button" id="btn-ok-print-error" class="btn btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast notifications -->
     <div id="toast" class="toast hidden">
       <span id="toast-message"></span>
