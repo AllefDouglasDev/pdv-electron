@@ -19,6 +19,27 @@ contextBridge.exposeInMainWorld('api', {
     delete: (id) => ipcRenderer.invoke('users:delete', id)
   },
 
+  // Product Management
+  products: {
+    list: (options) => ipcRenderer.invoke('products:list', options),
+    getById: (id) => ipcRenderer.invoke('products:getById', id),
+    getByBarcode: (barcode) => ipcRenderer.invoke('products:getByBarcode', barcode),
+    create: (data) => ipcRenderer.invoke('products:create', data),
+    update: (id, data) => ipcRenderer.invoke('products:update', { id, data }),
+    delete: (id) => ipcRenderer.invoke('products:delete', id),
+    count: (search) => ipcRenderer.invoke('products:count', search),
+    getLowStock: (threshold) => ipcRenderer.invoke('products:getLowStock', threshold)
+  },
+
+  // Sales / PDV
+  sales: {
+    getProductByBarcode: (barcode) => ipcRenderer.invoke('sales:getProductByBarcode', barcode),
+    checkStock: (productId, quantity) => ipcRenderer.invoke('sales:checkStock', { productId, quantity }),
+    finalize: (items, discountPercent) => ipcRenderer.invoke('sales:finalize', { items, discountPercent }),
+    getTodaySales: (userId) => ipcRenderer.invoke('sales:getTodaySales', userId),
+    getTodaySummary: () => ipcRenderer.invoke('sales:getTodaySummary')
+  },
+
   // Navigation
   navigate: (page) => ipcRenderer.invoke('navigate', page)
 });

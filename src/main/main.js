@@ -3,6 +3,8 @@ const path = require('path');
 const { initializeDatabase, closeDatabase } = require('./database');
 const authService = require('./services/auth');
 const usersService = require('./services/users');
+const productsService = require('./services/products');
+const salesService = require('./services/sales');
 
 let mainWindow;
 
@@ -119,4 +121,102 @@ ipcMain.handle('users:delete', (event, id) => {
     return { success: false, error: 'Acesso negado' };
   }
   return usersService.remove(id);
+});
+
+// IPC Handlers for Product Management
+ipcMain.handle('products:list', (event, options) => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return productsService.list(options);
+});
+
+ipcMain.handle('products:getById', (event, id) => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return productsService.getById(id);
+});
+
+ipcMain.handle('products:getByBarcode', (event, barcode) => {
+  // Allow all logged users to search by barcode (for PDV)
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return productsService.getByBarcode(barcode);
+});
+
+ipcMain.handle('products:create', (event, data) => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return productsService.create(data);
+});
+
+ipcMain.handle('products:update', (event, { id, data }) => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return productsService.update(id, data);
+});
+
+ipcMain.handle('products:delete', (event, id) => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return productsService.remove(id);
+});
+
+ipcMain.handle('products:count', (event, search) => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return productsService.count(search);
+});
+
+ipcMain.handle('products:getLowStock', (event, threshold) => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return productsService.getLowStock(threshold);
+});
+
+// IPC Handlers for Sales / PDV
+ipcMain.handle('sales:getProductByBarcode', (event, barcode) => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return salesService.getProductByBarcode(barcode);
+});
+
+ipcMain.handle('sales:checkStock', (event, { productId, quantity }) => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return salesService.checkStock(productId, quantity);
+});
+
+ipcMain.handle('sales:finalize', (event, { items, discountPercent }) => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  const session = authService.getSession();
+  if (!session || !session.userId) {
+    return { success: false, error: 'Sessao invalida' };
+  }
+  return salesService.finalizeSale(items, session.userId, discountPercent);
+});
+
+ipcMain.handle('sales:getTodaySales', (event, userId) => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return salesService.getTodaySales(userId);
+});
+
+ipcMain.handle('sales:getTodaySummary', () => {
+  if (!authService.isLoggedIn()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return salesService.getTodaySummary();
 });
