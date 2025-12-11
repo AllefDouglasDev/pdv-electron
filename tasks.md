@@ -17,6 +17,10 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
    - Fornecer instruções claras de teste
    - Aguardar feedback do usuário
 5. **ATUALIZAR PROGRESSO**: Sempre atualizar este arquivo após completar tarefas
+6. **COMMITS FREQUENTES**: Fazer commits para pequenas mudanças:
+   - Seguir Conventional Commits (feat, fix, docs, style, refactor, test, chore)
+   - Mensagens de commit sempre em inglês
+   - Exemplo: `feat: add product search by barcode`
 
 ---
 
@@ -27,8 +31,8 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 | 00 - Setup Inicial | Completo | 100% |
 | 01 - Autenticação | Completo | 100% |
 | 02 - Gestão de Usuários | Completo | 100% |
-| 03 - Gestão de Produtos | Não Iniciado | 0% |
-| 04 - Ponto de Venda (PDV) | Não Iniciado | 0% |
+| 03 - Gestão de Produtos | Completo | 100% |
+| 04 - Ponto de Venda (PDV) | Completo | 100% |
 | 05 - Controle de Estoque | Não Iniciado | 0% |
 | 06 - Relatórios | Não Iniciado | 0% |
 | 07 - Backup e Resiliência | Não Iniciado | 0% |
@@ -41,8 +45,9 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 
 ## Estágio Atual
 
-**Módulo em Desenvolvimento:** 03 - Gestão de Produtos
-**Próximo Passo:** Criar tela de cadastro de produtos com CRUD completo
+**Módulo em Desenvolvimento:** 04 - Ponto de Venda (PDV)
+**Status:** Completo
+**Próximo Passo:** Implementar Módulo 05 (Controle de Estoque)
 
 ---
 
@@ -149,15 +154,20 @@ CRUD de usuários. Docs: `docs/02-gestao-usuarios.md`
 Cadastro de produtos. Docs: `docs/03-gestao-produtos.md`
 
 ### Tarefas
-- [ ] Criar tela de cadastro de produto
-- [ ] Implementar campos: nome, valor compra, margem, quantidade, código barras
-- [ ] Calcular preço de venda automaticamente
-- [ ] Validar campos obrigatórios
-- [ ] Validar código de barras único
-- [ ] Implementar feedback visual
-- [ ] Limpar formulário após cadastro
+- [x] Criar tela de cadastro de produto
+- [x] Implementar campos: nome, valor compra, margem, quantidade, código barras
+- [x] Calcular preço de venda automaticamente
+- [x] Validar campos obrigatórios
+- [x] Validar código de barras único
+- [x] Implementar feedback visual
+- [x] Limpar formulário após cadastro
+- [x] Implementar listagem de produtos com paginação
+- [x] Implementar busca por nome ou código de barras
+- [x] Implementar edição de produtos
+- [x] Implementar exclusão de produtos
+- [x] Controle de acesso (Admin, Gerente)
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/renderer/pages/products.html`
 - `src/renderer/styles/products.css`
 - `src/renderer/scripts/products.js`
@@ -170,26 +180,25 @@ Cadastro de produtos. Docs: `docs/03-gestao-produtos.md`
 Tela de vendas. Docs: `docs/04-ponto-de-venda.md`
 
 ### Tarefas
-- [ ] Criar tela do PDV
-- [ ] Implementar campo de código de barras com suporte a scanner
-- [ ] Criar tabela do carrinho de compras
-- [ ] Implementar adição/remoção de itens
-- [ ] Implementar edição de quantidade
-- [ ] Calcular total automaticamente
-- [ ] Implementar campo de valor pago e troco
-- [ ] Implementar desconto percentual
-- [ ] Implementar finalização de venda
-- [ ] Baixar estoque automaticamente
-- [ ] Registrar venda no banco
-- [ ] Adicionar relógio em tempo real
-- [ ] Alertar estoque baixo (<=5)
+- [x] Criar tela do PDV
+- [x] Implementar campo de código de barras com suporte a scanner
+- [x] Criar tabela do carrinho de compras
+- [x] Implementar adição/remoção de itens
+- [x] Implementar edição de quantidade
+- [x] Calcular total automaticamente
+- [x] Implementar campo de valor pago e troco
+- [x] Implementar desconto percentual
+- [x] Implementar finalização de venda
+- [x] Baixar estoque automaticamente
+- [x] Registrar venda no banco
+- [x] Adicionar relógio em tempo real
+- [x] Alertar estoque baixo (<=5)
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/renderer/pages/pdv.html`
 - `src/renderer/styles/pdv.css`
 - `src/renderer/scripts/pdv.js`
 - `src/main/services/sales.js`
-- `src/main/services/cart.js`
 
 ---
 
@@ -384,4 +393,51 @@ Implementações de segurança. Docs: `docs/11-seguranca.md`
   - Validação de username único
   - Senha opcional na edição
 
-**Próximos passos:** Implementar Módulo 03 (Gestão de Produtos)
+**Próximos passos:** Implementar Módulo 04 (Ponto de Venda - PDV)
+
+### Sessão 5 - 2025-12-11
+- Criado serviço de produtos (products.js) com CRUD completo
+- Implementadas validações de frontend e backend
+- Criados IPC handlers para operações de produtos
+- Atualizado preload.js com API de produtos
+- Criada página HTML de gestão de produtos (products.html)
+- Criados estilos CSS para a página (products.css)
+- Criada lógica JavaScript para gestão de produtos (products.js)
+- Implementada listagem com paginação (20 produtos por página)
+- Implementada busca por nome ou código de barras
+- Implementado modal para criar/editar produtos
+- Implementado cálculo automático do preço de venda em tempo real
+- Implementado modal de confirmação de exclusão
+- Implementado sistema de toast para feedback
+- Adicionado controle de acesso (apenas Admin e Gerente)
+- Atualizado dashboard com permissões para botão de produtos
+
+**Próximos passos:** Implementar Módulo 04 (Ponto de Venda - PDV)
+
+### Sessão 6 - 2025-12-11
+- Criado serviço de vendas (sales.js) com operações:
+  - Busca de produto por código de barras
+  - Verificação de estoque
+  - Finalização de venda com transação
+  - Consulta de vendas do dia
+  - Resumo de vendas do dia
+- Criados IPC handlers para operações de vendas
+- Atualizado preload.js com API de vendas
+- Criada página HTML do PDV (pdv.html) com:
+  - Campo de código de barras com suporte a scanner
+  - Tabela do carrinho de compras
+  - Área de pagamento com total, valor pago e troco
+  - Modais para edição de quantidade, desconto, remoção e alerta de estoque
+- Criados estilos CSS para o PDV (pdv.css)
+- Criada lógica JavaScript do PDV (pdv.js) com:
+  - Adição de produtos por código de barras
+  - Edição de quantidade de itens
+  - Remoção de itens do carrinho
+  - Aplicação de desconto percentual (até 50%)
+  - Cálculo de troco
+  - Finalização de venda com baixa de estoque
+  - Alerta de estoque baixo (<=5 unidades)
+  - Atalhos de teclado (F2, Del, F5, F10, ESC)
+  - Relógio em tempo real
+
+**Próximos passos:** Implementar Módulo 05 (Controle de Estoque)

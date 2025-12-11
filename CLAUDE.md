@@ -35,6 +35,13 @@ Always update `tasks.md` after completing tasks or at the end of a session.
 
 5. **Update Progress**: Always update `tasks.md` after completing sub-tasks to maintain accurate progress tracking.
 
+6. **Commit Frequently**: Always commit small changes incrementally:
+   - Make commits for each small, logical change
+   - Follow Conventional Commits specification
+   - Commit messages must be in English
+   - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+   - Example: `feat: add product search by barcode`
+
 ## Project Overview
 
 FuxoDeCaixa is a Point of Sale (PDV) system for managing sales, inventory, and financial reports built with Electron.
