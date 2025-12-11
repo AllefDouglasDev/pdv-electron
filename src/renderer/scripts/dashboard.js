@@ -48,12 +48,21 @@ document.addEventListener('DOMContentLoaded', async () => {
    * @param {string} role - User's role
    */
   function applyRolePermissions(role) {
+    // Apply to nav items
     const navItems = document.querySelectorAll('.nav-item[data-require-role]');
-
     navItems.forEach(item => {
       const requiredRoles = item.dataset.requireRole.split(',');
       if (!requiredRoles.includes(role)) {
         item.classList.add('hidden');
+      }
+    });
+
+    // Apply to quick action buttons
+    const quickActions = document.querySelectorAll('.quick-action-btn[data-require-role]');
+    quickActions.forEach(btn => {
+      const requiredRoles = btn.dataset.requireRole.split(',');
+      if (!requiredRoles.includes(role)) {
+        btn.classList.add('hidden');
       }
     });
   }

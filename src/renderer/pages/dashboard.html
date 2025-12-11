@@ -28,7 +28,7 @@
             <span class="nav-text">PDV</span>
           </button>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-require-role="admin,gerente">
           <button class="nav-btn" data-page="products">
             <span class="nav-icon">&#128230;</span>
             <span class="nav-text">Produtos</span>
@@ -65,7 +65,7 @@
             <span class="quick-icon">&#128722;</span>
             <span class="quick-text">Nova Venda</span>
           </button>
-          <button class="quick-action-btn" data-page="products">
+          <button class="quick-action-btn" data-page="products" data-require-role="admin,gerente">
             <span class="quick-icon">&#128230;</span>
             <span class="quick-text">Cadastrar Produto</span>
           </button>
