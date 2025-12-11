@@ -5,20 +5,35 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 
 ---
 
+## Regras de Desenvolvimento
+
+**IMPORTANTE - Seguir rigorosamente:**
+
+1. **UM MÓDULO POR VEZ**: Nunca trabalhar em mais de um módulo simultaneamente
+2. **VERIFICAR STATUS**: Antes de começar, verificar qual módulo está "Em Progresso"
+3. **DIVIDIR EM TAREFAS PEQUENAS**: Criar sub-tarefas gerenciáveis antes de iniciar um módulo
+4. **COMPLETAR E REPORTAR**: Após cada sub-tarefa:
+   - Informar o que foi feito
+   - Fornecer instruções claras de teste
+   - Aguardar feedback do usuário
+5. **ATUALIZAR PROGRESSO**: Sempre atualizar este arquivo após completar tarefas
+
+---
+
 ## Status Geral
 
 | Módulo | Status | Progresso |
 |--------|--------|-----------|
-| 00 - Setup Inicial | Em Progresso | 40% |
-| 01 - Autenticação | Não Iniciado | 0% |
-| 02 - Gestão de Usuários | Não Iniciado | 0% |
+| 00 - Setup Inicial | Completo | 100% |
+| 01 - Autenticação | Completo | 100% |
+| 02 - Gestão de Usuários | Completo | 100% |
 | 03 - Gestão de Produtos | Não Iniciado | 0% |
 | 04 - Ponto de Venda (PDV) | Não Iniciado | 0% |
 | 05 - Controle de Estoque | Não Iniciado | 0% |
 | 06 - Relatórios | Não Iniciado | 0% |
 | 07 - Backup e Resiliência | Não Iniciado | 0% |
-| 08 - Banco de Dados | Não Iniciado | 0% |
-| 09 - Cálculos de Negócio | Não Iniciado | 0% |
+| 08 - Banco de Dados | Completo | 100% |
+| 09 - Cálculos de Negócio | Completo | 100% |
 | 10 - Impressão de Cupom | Não Iniciado | 0% |
 | 11 - Segurança | Não Iniciado | 0% |
 
@@ -26,8 +41,8 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 
 ## Estágio Atual
 
-**Módulo em Desenvolvimento:** 00 - Setup Inicial
-**Próximo Passo:** Configurar estrutura do banco de dados (Módulo 08)
+**Módulo em Desenvolvimento:** 03 - Gestão de Produtos
+**Próximo Passo:** Criar tela de cadastro de produtos com CRUD completo
 
 ---
 
@@ -47,8 +62,8 @@ Configuração base do projeto Electron.
 - [x] Criar arquivos CSS e JS base
 - [x] Criar .gitignore
 - [x] Atualizar CLAUDE.md com convenções
-- [ ] Rebuild de módulos nativos para Electron (electron-rebuild)
-- [ ] Testar execução do app (`npm start`)
+- [x] Rebuild de módulos nativos para Electron (electron-rebuild)
+- [x] Testar execução do app (`npm start`)
 
 ### Arquivos Criados
 - `package.json`
@@ -67,18 +82,19 @@ Configuração base do projeto Electron.
 Schema SQLite e inicialização. **Deve ser implementado antes dos outros módulos.**
 
 ### Tarefas
-- [ ] Criar módulo de conexão com SQLite (`src/main/database/connection.js`)
-- [ ] Criar schema das tabelas em inglês (`users`, `products`, `sales`)
-- [ ] Criar script de inicialização do banco
-- [ ] Criar usuário admin padrão (senha: admin)
-- [ ] Implementar PRAGMA foreign_keys = ON
-- [ ] Criar índices para otimização
-- [ ] Testar criação automática do banco
+- [x] Criar módulo de conexão com SQLite (`src/main/database/connection.js`)
+- [x] Criar schema das tabelas em inglês (`users`, `products`, `sales`)
+- [x] Criar script de inicialização do banco
+- [x] Criar usuário admin padrão (senha: admin)
+- [x] Implementar PRAGMA foreign_keys = ON
+- [x] Criar índices para otimização
+- [x] Testar criação automática do banco
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/main/database/connection.js`
 - `src/main/database/schema.js`
 - `src/main/database/seed.js`
+- `src/main/database/index.js`
 
 ---
 
@@ -87,19 +103,23 @@ Schema SQLite e inicialização. **Deve ser implementado antes dos outros módul
 Sistema de login e sessão. Docs: `docs/01-autenticacao.md`
 
 ### Tarefas
-- [ ] Criar tela de login (HTML/CSS)
-- [ ] Implementar validação de campos obrigatórios
-- [ ] Criar IPC handlers para autenticação
-- [ ] Implementar verificação de credenciais com bcrypt
-- [ ] Criar sistema de sessão no processo principal
-- [ ] Implementar navegação para tela principal após login
-- [ ] Adicionar mensagens de erro em PT-BR
+- [x] Criar tela de login (HTML/CSS)
+- [x] Implementar validação de campos obrigatórios
+- [x] Criar IPC handlers para autenticação
+- [x] Implementar verificação de credenciais com bcrypt
+- [x] Criar sistema de sessão no processo principal
+- [x] Implementar navegação para tela principal após login
+- [x] Adicionar mensagens de erro em PT-BR
+- [x] Criar tela de dashboard (painel principal)
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/renderer/pages/login.html`
 - `src/renderer/styles/login.css`
 - `src/renderer/scripts/login.js`
 - `src/main/services/auth.js`
+- `src/renderer/pages/dashboard.html`
+- `src/renderer/styles/dashboard.css`
+- `src/renderer/scripts/dashboard.js`
 
 ---
 
@@ -108,15 +128,15 @@ Sistema de login e sessão. Docs: `docs/01-autenticacao.md`
 CRUD de usuários. Docs: `docs/02-gestao-usuarios.md`
 
 ### Tarefas
-- [ ] Criar tela de listagem de usuários
-- [ ] Implementar formulário de criação
-- [ ] Implementar formulário de edição
-- [ ] Implementar exclusão com confirmação
-- [ ] Adicionar seletor de roles (Admin, Gerente, Operador)
-- [ ] Validar duplicidade de username
-- [ ] Restringir acesso apenas para Admin
+- [x] Criar tela de listagem de usuários
+- [x] Implementar formulário de criação
+- [x] Implementar formulário de edição
+- [x] Implementar exclusão com confirmação
+- [x] Adicionar seletor de roles (Admin, Gerente, Operador)
+- [x] Validar duplicidade de username
+- [x] Restringir acesso apenas para Admin
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/renderer/pages/users.html`
 - `src/renderer/styles/users.css`
 - `src/renderer/scripts/users.js`
@@ -241,18 +261,18 @@ Sistema de backup. Docs: `docs/07-backup-resiliencia.md`
 Funções de cálculo. Docs: `docs/09-calculos-negocio.md`
 
 ### Tarefas
-- [ ] Criar módulo de cálculos
-- [ ] Implementar cálculo de preço de venda
-- [ ] Implementar cálculo de subtotal
-- [ ] Implementar cálculo de total
-- [ ] Implementar cálculo de troco
-- [ ] Implementar aplicação de desconto
-- [ ] Implementar cálculo de lucro
-- [ ] Implementar formatação de moeda (R$)
-- [ ] Implementar arredondamento (2 casas)
-- [ ] Implementar conversão vírgula/ponto
+- [x] Criar módulo de cálculos
+- [x] Implementar cálculo de preço de venda
+- [x] Implementar cálculo de subtotal
+- [x] Implementar cálculo de total
+- [x] Implementar cálculo de troco
+- [x] Implementar aplicação de desconto
+- [x] Implementar cálculo de lucro
+- [x] Implementar formatação de moeda (R$)
+- [x] Implementar arredondamento (2 casas)
+- [x] Implementar conversão vírgula/ponto
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/shared/calculations.js`
 - `src/shared/formatters.js`
 
@@ -321,4 +341,47 @@ Implementações de segurança. Docs: `docs/11-seguranca.md`
 - Atualizado CLAUDE.md com convenções de idioma
 - Criado este arquivo tasks.md
 
-**Próximos passos:** Finalizar setup (electron-rebuild) e iniciar Módulo 08 (Banco de Dados)
+### Sessão 2 - 2025-12-11
+- Instalado @electron/rebuild e reconstruídos módulos nativos
+- Criado módulo de conexão com SQLite (connection.js)
+- Criado schema das tabelas (schema.js) com users, products, sales
+- Criado seed para usuário admin (seed.js)
+- Criado index.js para exportar funções do banco
+- Integrado banco de dados no main.js (inicialização e fechamento)
+- Testado app: banco criado automaticamente, tabelas e índices OK
+- Usuário admin criado com sucesso (senha: admin)
+
+**Próximos passos:** Implementar Módulo 09 (Cálculos de Negócio) e depois Módulo 11 (Segurança)
+
+### Sessão 3 - 2025-12-11
+- Criado módulo de cálculos de negócio (calculations.js)
+- Criado módulo de formatação (formatters.js)
+- Testados todos os cálculos e formatações
+- Criada tela de login com validação de campos
+- Criado serviço de autenticação com bcrypt
+- Configurados IPC handlers para login/logout
+- Atualizado preload.js com APIs de autenticação
+- Criada tela de dashboard com menu lateral
+- Implementado controle de acesso por role
+- Implementado relógio em tempo real no dashboard
+
+**Próximos passos:** Implementar Módulo 02 (Gestão de Usuários)
+
+### Sessão 4 - 2025-12-11
+- Criado serviço de usuários (users.js) com CRUD completo
+- Implementadas validações de frontend e backend
+- Criados IPC handlers para operações de usuários
+- Atualizado preload.js com API de usuários
+- Criada página HTML de gestão de usuários (users.html)
+- Criados estilos CSS para a página (users.css)
+- Criada lógica JavaScript para gestão de usuários (users.js)
+- Implementado modal para criar/editar usuários
+- Implementado modal de confirmação de exclusão
+- Implementado sistema de toast para feedback
+- Implementadas regras de negócio:
+  - Não permite excluir/inativar o último admin
+  - Não permite auto-exclusão ou auto-inativação
+  - Validação de username único
+  - Senha opcional na edição
+
+**Próximos passos:** Implementar Módulo 03 (Gestão de Produtos)

@@ -11,6 +11,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Always update `tasks.md` after completing tasks or at the end of a session.
 
+## Development Workflow Rules
+
+**CRITICAL - Follow these rules strictly:**
+
+1. **ONE MODULE AT A TIME**: Never work on more than one module simultaneously. Focus on completing the current module before starting another.
+
+2. **Check Current Status First**: Before starting any work:
+   - Check `tasks.md` for modules in progress
+   - If a module is "Em Progresso", continue from where it stopped
+   - If no module is in progress, start the next one in the recommended order
+
+3. **Break Down Into Small Tasks**: Before starting a module:
+   - Create a list of small, manageable sub-tasks in the todo list
+   - Each sub-task should be completable in a focused work session
+   - Work on one sub-task at a time
+
+4. **Complete and Report**: After completing each sub-task:
+   - Mark the sub-task as completed
+   - Inform the user what was done
+   - Provide clear testing instructions (how to test, what to expect)
+   - Wait for user feedback before proceeding
+
+5. **Update Progress**: Always update `tasks.md` after completing sub-tasks to maintain accurate progress tracking.
+
 ## Project Overview
 
 FuxoDeCaixa is a Point of Sale (PDV) system for managing sales, inventory, and financial reports built with Electron.

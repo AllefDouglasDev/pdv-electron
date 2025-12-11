@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>FuxoDeCaixa - Painel Principal</title>
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <header class="header">
+      <div class="header-title">
+        <h1>FuxoDeCaixa</h1>
+      </div>
+      <div class="header-user">
+        <span id="user-info">Carregando...</span>
+        <button id="btn-logout" class="btn btn-logout">Sair</button>
+      </div>
+    </header>
+
+    <nav class="sidebar">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <button class="nav-btn" data-page="pdv">
+            <span class="nav-icon">&#128722;</span>
+            <span class="nav-text">PDV</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" data-page="products">
+            <span class="nav-icon">&#128230;</span>
+            <span class="nav-text">Produtos</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" data-page="stock">
+            <span class="nav-icon">&#128451;</span>
+            <span class="nav-text">Estoque</span>
+          </button>
+        </li>
+        <li class="nav-item" data-require-role="admin,gerente">
+          <button class="nav-btn" data-page="reports">
+            <span class="nav-icon">&#128200;</span>
+            <span class="nav-text">Relatórios</span>
+          </button>
+        </li>
+        <li class="nav-item" data-require-role="admin">
+          <button class="nav-btn" data-page="users">
+            <span class="nav-icon">&#128101;</span>
+            <span class="nav-text">Usuários</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <div class="welcome-panel">
+        <h2>Bem-vindo ao FuxoDeCaixa</h2>
+        <p>Selecione uma opção no menu lateral para começar.</p>
+
+        <div class="quick-actions">
+          <button class="quick-action-btn" data-page="pdv">
+            <span class="quick-icon">&#128722;</span>
+            <span class="quick-text">Nova Venda</span>
+          </button>
+          <button class="quick-action-btn" data-page="products">
+            <span class="quick-icon">&#128230;</span>
+            <span class="quick-text">Cadastrar Produto</span>
+          </button>
+          <button class="quick-action-btn" data-page="stock">
+            <span class="quick-icon">&#128451;</span>
+            <span class="quick-text">Ver Estoque</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="clock-panel">
+        <div id="current-time" class="current-time">--:--:--</div>
+        <div id="current-date" class="current-date">--/--/----</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../scripts/dashboard.js"></script>
+</body>
+</html>

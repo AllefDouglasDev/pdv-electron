@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>FuxoDeCaixa - Gestão de Usuários</title>
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/users.css">
+</head>
+<body>
+  <div class="users-container">
+    <header class="header">
+      <div class="header-left">
+        <button id="btn-back" class="btn btn-back">&larr; Voltar</button>
+        <h1>Gestão de Usuários</h1>
+      </div>
+      <div class="header-right">
+        <span id="user-info">Carregando...</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="toolbar">
+        <button id="btn-new-user" class="btn btn-primary">+ Novo Usuário</button>
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Buscar por usuário ou nome..." />
+          <button id="btn-search" class="btn btn-search">Buscar</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Usuário</th>
+              <th>Nome Completo</th>
+              <th>Perfil</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+            <tr>
+              <td colspan="5" class="loading-row">Carregando usuários...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="users-count" class="users-count"></div>
+    </main>
+
+    <!-- Modal for Create/Edit User -->
+    <div id="user-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title">Novo Usuário</h2>
+          <button id="btn-close-modal" class="btn-close">&times;</button>
+        </div>
+        <form id="user-form">
+          <input type="hidden" id="user-id" />
+
+          <div class="form-group">
+            <label for="username">Usuário *</label>
+            <input type="text" id="username" name="username" maxlength="50" autocomplete="off" />
+            <span class="field-hint">Apenas letras, números e underscore</span>
+            <span class="field-error" id="username-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="full-name">Nome Completo *</label>
+            <input type="text" id="full-name" name="fullName" maxlength="100" />
+            <span class="field-error" id="full-name-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Senha <span id="password-required">*</span></label>
+            <input type="password" id="password" name="password" />
+            <span class="field-hint" id="password-hint">Mínimo 4 caracteres</span>
+            <span class="field-error" id="password-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm-password">Confirmar Senha <span id="confirm-required">*</span></label>
+            <input type="password" id="confirm-password" name="confirmPassword" />
+            <span class="field-error" id="confirm-password-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="role">Perfil *</label>
+            <select id="role" name="role">
+              <option value="">Selecione um perfil</option>
+              <option value="admin">Administrador</option>
+              <option value="gerente">Gerente</option>
+              <option value="operador">Operador</option>
+            </select>
+            <span class="field-error" id="role-error"></span>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="is-active" name="isActive" checked />
+              <span>Usuário ativo</span>
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="btn-cancel" class="btn btn-secondary">Cancelar</button>
+            <button type="submit" id="btn-save" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for Delete Confirmation -->
+    <div id="delete-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2>Confirmar Exclusão</h2>
+          <button id="btn-close-delete" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja realmente excluir o usuário <strong id="delete-username"></strong>?</p>
+          <p class="warning-text">Esta ação não pode ser desfeita.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-delete" class="btn btn-secondary">Cancelar</button>
+          <button type="button" id="btn-confirm-delete" class="btn btn-danger">Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast" class="toast hidden">
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <script src="../scripts/users.js"></script>
+</body>
+</html>
