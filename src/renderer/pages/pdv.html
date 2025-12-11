@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>FuxoDeCaixa - Ponto de Venda</title>
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/pdv.css">
+</head>
+<body>
+  <div class="pdv-container">
+    <header class="header">
+      <div class="header-left">
+        <button id="btn-back" class="btn btn-back">&larr; Menu</button>
+        <h1>Ponto de Venda</h1>
+      </div>
+      <div class="header-right">
+        <span id="clock" class="clock">00/00/0000 00:00:00</span>
+        <span id="user-info">Carregando...</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="barcode-section">
+        <div class="barcode-input-container">
+          <label for="barcode-input">Codigo de Barras:</label>
+          <input type="text" id="barcode-input" placeholder="Digite ou escaneie o codigo..." autocomplete="off" autofocus />
+          <button id="btn-add" class="btn btn-primary">Adicionar</button>
+        </div>
+      </section>
+
+      <section class="cart-section">
+        <div class="table-container">
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th class="col-select"></th>
+                <th class="col-name">Nome</th>
+                <th class="col-barcode">Codigo</th>
+                <th class="col-qty">Qtd</th>
+                <th class="col-price">Valor Unit.</th>
+                <th class="col-subtotal">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="cart-table-body">
+              <tr class="empty-cart-row">
+                <td colspan="6">Carrinho vazio. Adicione produtos para comecar.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cart-actions">
+          <button id="btn-edit-qty" class="btn btn-secondary" disabled>Editar Qtd (F2)</button>
+          <button id="btn-remove" class="btn btn-danger" disabled>Remover (Del)</button>
+          <button id="btn-discount" class="btn btn-warning">Desconto (F5)</button>
+          <button id="btn-clear" class="btn btn-secondary">Limpar Carrinho</button>
+        </div>
+      </section>
+
+      <section class="payment-section">
+        <div class="total-display">
+          <span class="total-label">TOTAL:</span>
+          <span id="total-value" class="total-value">R$ 0,00</span>
+          <span id="discount-info" class="discount-info hidden"></span>
+        </div>
+
+        <div class="payment-inputs">
+          <div class="payment-field">
+            <label for="amount-paid">Valor Pago (R$):</label>
+            <input type="text" id="amount-paid" placeholder="0,00" autocomplete="off" />
+          </div>
+          <button id="btn-calc-change" class="btn btn-secondary">Calcular Troco</button>
+          <div class="change-display">
+            <span class="change-label">Troco:</span>
+            <span id="change-value" class="change-value">R$ 0,00</span>
+          </div>
+        </div>
+
+        <div class="finalize-section">
+          <button id="btn-finalize" class="btn btn-success btn-large">FINALIZAR VENDA (F10)</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal for Edit Quantity -->
+    <div id="qty-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2>Editar Quantidade</h2>
+          <button id="btn-close-qty" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Produto: <strong id="qty-product-name"></strong></p>
+          <p>Estoque disponivel: <strong id="qty-stock-available"></strong></p>
+          <div class="form-group">
+            <label for="new-quantity">Nova Quantidade:</label>
+            <input type="number" id="new-quantity" min="0" value="1" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-qty" class="btn btn-secondary">Cancelar</button>
+          <button type="button" id="btn-confirm-qty" class="btn btn-primary">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Discount -->
+    <div id="discount-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2>Aplicar Desconto</h2>
+          <button id="btn-close-discount" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Total atual: <strong id="discount-current-total"></strong></p>
+          <div class="form-group">
+            <label for="discount-percent">Percentual de Desconto (%):</label>
+            <input type="number" id="discount-percent" min="0" max="50" value="0" />
+            <span class="field-hint">Maximo: 50%</span>
+          </div>
+          <p>Novo total: <strong id="discount-new-total">R$ 0,00</strong></p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-discount" class="btn btn-secondary">Cancelar</button>
+          <button type="button" id="btn-confirm-discount" class="btn btn-primary">Aplicar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Remove Confirmation -->
+    <div id="remove-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2>Remover Item</h2>
+          <button id="btn-close-remove" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja remover <strong id="remove-product-name"></strong> do carrinho?</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-remove" class="btn btn-secondary">Cancelar</button>
+          <button type="button" id="btn-confirm-remove" class="btn btn-danger">Remover</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Low Stock Alert -->
+    <div id="stock-alert-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header warning-header">
+          <h2>Atencao - Estoque Baixo</h2>
+          <button id="btn-close-stock-alert" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="stock-alert-message"></p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-ok-stock-alert" class="btn btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast" class="toast hidden">
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <script src="../scripts/pdv.js"></script>
+</body>
+</html>
