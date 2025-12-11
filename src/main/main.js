@@ -125,14 +125,16 @@ ipcMain.handle('users:delete', (event, id) => {
 
 // IPC Handlers for Product Management
 ipcMain.handle('products:list', (event, options) => {
-  if (!authService.isManager()) {
+  // Allow all logged users to list products (for stock viewing)
+  if (!authService.isLoggedIn()) {
     return { success: false, error: 'Acesso negado' };
   }
   return productsService.list(options);
 });
 
 ipcMain.handle('products:getById', (event, id) => {
-  if (!authService.isManager()) {
+  // Allow all logged users to get product details (for stock viewing)
+  if (!authService.isLoggedIn()) {
     return { success: false, error: 'Acesso negado' };
   }
   return productsService.getById(id);
@@ -168,7 +170,8 @@ ipcMain.handle('products:delete', (event, id) => {
 });
 
 ipcMain.handle('products:count', (event, search) => {
-  if (!authService.isManager()) {
+  // Allow all logged users to count products (for stock viewing)
+  if (!authService.isLoggedIn()) {
     return { success: false, error: 'Acesso negado' };
   }
   return productsService.count(search);

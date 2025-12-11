@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>FuxoDeCaixa - Controle de Estoque</title>
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/stock.css">
+</head>
+<body>
+  <div class="stock-container">
+    <header class="header">
+      <div class="header-left">
+        <button id="btn-back" class="btn btn-back">&larr; Voltar</button>
+        <h1>Controle de Estoque</h1>
+      </div>
+      <div class="header-right">
+        <span id="user-info">Carregando...</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="toolbar">
+        <button id="btn-list-all" class="btn btn-secondary">Listar Todos</button>
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Buscar por codigo de barras..." />
+          <button id="btn-search" class="btn btn-search">Buscar</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Codigo de Barras</th>
+              <th>Quantidade</th>
+              <th>Margem</th>
+              <th>Preco de Venda</th>
+            </tr>
+          </thead>
+          <tbody id="stock-table-body">
+            <tr>
+              <td colspan="5" class="empty-row">Clique em "Listar Todos" ou busque por codigo de barras</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <div id="products-count" class="products-count"></div>
+        <div class="pagination">
+          <button id="btn-prev" class="btn btn-secondary btn-small" disabled>&larr; Anterior</button>
+          <span id="page-info">Pagina 1</span>
+          <button id="btn-next" class="btn btn-secondary btn-small" disabled>Proxima &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Edit Form Section -->
+      <div id="edit-section" class="edit-section hidden">
+        <div class="edit-header">
+          <h2>Editar Produto</h2>
+          <span class="edit-hint">(selecione um item na tabela acima)</span>
+        </div>
+        <form id="edit-form">
+          <input type="hidden" id="product-id" />
+
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="edit-name">Nome do Produto *</label>
+              <input type="text" id="edit-name" name="name" maxlength="100" autocomplete="off" />
+              <span class="field-error" id="name-error"></span>
+            </div>
+
+            <div class="form-group flex-1">
+              <label for="edit-barcode">Codigo de Barras</label>
+              <input type="text" id="edit-barcode" name="barcode" readonly disabled class="readonly-field" />
+              <span class="field-hint">Nao pode ser alterado</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-purchase-price">Valor de Compra (R$) *</label>
+              <input type="text" id="edit-purchase-price" name="purchasePrice" placeholder="0,00" autocomplete="off" />
+              <span class="field-error" id="purchase-price-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-margin">Margem de Lucro (%) *</label>
+              <input type="number" id="edit-margin" name="profitMargin" min="0" max="1000" />
+              <span class="field-error" id="margin-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-quantity">Quantidade *</label>
+              <input type="number" id="edit-quantity" name="quantity" min="0" max="999999" />
+              <span class="field-error" id="quantity-error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-sale-price">Preco de Venda (R$)</label>
+              <input type="text" id="edit-sale-price" name="salePrice" readonly disabled class="readonly-field calculated-field" />
+              <span class="field-hint">Calculado automaticamente</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="btn-clear" class="btn btn-secondary">Limpar Selecao</button>
+            <button type="submit" id="btn-save" class="btn btn-primary">Salvar Alteracoes</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- View-only message for operators -->
+      <div id="view-only-message" class="view-only-message hidden">
+        <p>Voce tem acesso somente para visualizacao. Apenas administradores e gerentes podem editar produtos.</p>
+      </div>
+    </main>
+
+    <!-- Toast notifications -->
+    <div id="toast" class="toast hidden">
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <script src="../scripts/stock.js"></script>
+</body>
+</html>

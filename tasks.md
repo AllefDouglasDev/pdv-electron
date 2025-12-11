@@ -33,7 +33,7 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 | 02 - Gestão de Usuários | Completo | 100% |
 | 03 - Gestão de Produtos | Completo | 100% |
 | 04 - Ponto de Venda (PDV) | Completo | 100% |
-| 05 - Controle de Estoque | Não Iniciado | 0% |
+| 05 - Controle de Estoque | Completo | 100% |
 | 06 - Relatórios | Não Iniciado | 0% |
 | 07 - Backup e Resiliência | Não Iniciado | 0% |
 | 08 - Banco de Dados | Completo | 100% |
@@ -45,9 +45,9 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 
 ## Estágio Atual
 
-**Módulo em Desenvolvimento:** 04 - Ponto de Venda (PDV)
+**Módulo em Desenvolvimento:** 05 - Controle de Estoque
 **Status:** Completo
-**Próximo Passo:** Implementar Módulo 05 (Controle de Estoque)
+**Próximo Passo:** Implementar Módulo 06 (Relatórios)
 
 ---
 
@@ -207,15 +207,18 @@ Tela de vendas. Docs: `docs/04-ponto-de-venda.md`
 Listagem e edição de estoque. Docs: `docs/05-controle-estoque.md`
 
 ### Tarefas
-- [ ] Criar tela de listagem de produtos
-- [ ] Implementar tabela com paginação (20/página)
-- [ ] Implementar busca por código de barras
-- [ ] Implementar seleção para edição
-- [ ] Criar formulário de edição
-- [ ] Recalcular preço ao editar margem
-- [ ] Implementar feedback de sucesso/erro
+- [x] Criar tela de listagem de produtos
+- [x] Implementar tabela com paginação (20/página)
+- [x] Implementar busca por código de barras
+- [x] Implementar seleção para edição
+- [x] Criar formulário de edição
+- [x] Recalcular preço ao editar margem
+- [x] Implementar feedback de sucesso/erro
+- [x] Controle de acesso (Admin/Gerente editam, Operador só visualiza)
+- [x] Destaque visual para produtos com estoque baixo (<=5)
+- [x] Atalhos de teclado (ESC limpar seleção, F5 atualizar)
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/renderer/pages/stock.html`
 - `src/renderer/styles/stock.css`
 - `src/renderer/scripts/stock.js`
@@ -440,4 +443,22 @@ Implementações de segurança. Docs: `docs/11-seguranca.md`
   - Atalhos de teclado (F2, Del, F5, F10, ESC)
   - Relógio em tempo real
 
-**Próximos passos:** Implementar Módulo 05 (Controle de Estoque)
+**Próximos passos:** Implementar Módulo 06 (Relatórios)
+
+### Sessão 7 - 2025-12-11
+- Criada página HTML do Controle de Estoque (stock.html)
+- Criados estilos CSS para a página (stock.css)
+- Criada lógica JavaScript para gestão de estoque (stock.js)
+- Implementada listagem de produtos com paginação (20 por página)
+- Implementada busca por código de barras
+- Implementada seleção de produto na tabela para edição
+- Implementado formulário de edição inline (abaixo da tabela)
+- Implementado recálculo automático do preço de venda
+- Implementado controle de acesso:
+  - Admin e Gerente: podem visualizar e editar
+  - Operador: apenas visualização
+- Implementado destaque visual para produtos com estoque baixo (<=5)
+- Implementados atalhos de teclado (ESC, F5)
+- Ajustados IPC handlers para permitir operadores visualizarem produtos
+
+**Próximos passos:** Implementar Módulo 06 (Relatórios)
