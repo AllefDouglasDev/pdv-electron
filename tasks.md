@@ -34,7 +34,7 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 | 03 - Gestão de Produtos | Completo | 100% |
 | 04 - Ponto de Venda (PDV) | Completo | 100% |
 | 05 - Controle de Estoque | Completo | 100% |
-| 06 - Relatórios | Não Iniciado | 0% |
+| 06 - Relatórios | Completo | 100% |
 | 07 - Backup e Resiliência | Não Iniciado | 0% |
 | 08 - Banco de Dados | Completo | 100% |
 | 09 - Cálculos de Negócio | Completo | 100% |
@@ -45,9 +45,9 @@ Use este arquivo para continuar o desenvolvimento em novas sessões do Claude.
 
 ## Estágio Atual
 
-**Módulo em Desenvolvimento:** 05 - Controle de Estoque
+**Módulo em Desenvolvimento:** 06 - Relatórios
 **Status:** Completo
-**Próximo Passo:** Implementar Módulo 06 (Relatórios)
+**Próximo Passo:** Implementar Módulo 07 (Backup e Resiliência)
 
 ---
 
@@ -230,17 +230,18 @@ Listagem e edição de estoque. Docs: `docs/05-controle-estoque.md`
 Relatórios de vendas. Docs: `docs/06-relatorios.md`
 
 ### Tarefas
-- [ ] Criar tela de relatórios
-- [ ] Implementar tabela de vendas do dia
-- [ ] Calcular lucro por item
-- [ ] Implementar totalizadores
-- [ ] Implementar fechamento de caixa
-- [ ] Adicionar confirmação antes do fechamento
-- [ ] Limpar vendas após fechamento
-- [ ] Adicionar relógio em tempo real
-- [ ] Restringir acesso (Admin, Gerente)
+- [x] Criar tela de relatórios
+- [x] Implementar tabela de vendas do dia
+- [x] Calcular lucro por item
+- [x] Implementar totalizadores
+- [x] Implementar fechamento de caixa
+- [x] Adicionar confirmação antes do fechamento
+- [x] Limpar vendas após fechamento
+- [x] Adicionar relógio em tempo real
+- [x] Restringir acesso (Admin, Gerente)
+- [x] Implementar atalhos de teclado (F5, F10, ESC)
 
-### Arquivos a Criar
+### Arquivos Criados
 - `src/renderer/pages/reports.html`
 - `src/renderer/styles/reports.css`
 - `src/renderer/scripts/reports.js`
@@ -462,3 +463,26 @@ Implementações de segurança. Docs: `docs/11-seguranca.md`
 - Ajustados IPC handlers para permitir operadores visualizarem produtos
 
 **Próximos passos:** Implementar Módulo 06 (Relatórios)
+
+### Sessão 8 - 2025-12-11
+- Criado serviço de relatórios (reports.js) com operações:
+  - Busca de todas as vendas desde o último fechamento
+  - Resumo de vendas com totais
+  - Fechamento de caixa (limpeza de vendas)
+- Criados IPC handlers para operações de relatórios
+- Atualizado preload.js com API de relatórios
+- Criada página HTML de relatórios (reports.html) com:
+  - Tabela de vendas com produto, custo, quantidade, venda, lucro e hora
+  - Seção de resumo com total investido, vendas e lucro
+  - Modal de confirmação para fechamento de caixa
+- Criados estilos CSS para a página (reports.css)
+- Criada lógica JavaScript de relatórios (reports.js) com:
+  - Carregamento de vendas e resumo
+  - Cálculo de lucro por item
+  - Destaque visual para lucro/prejuízo (verde/vermelho)
+  - Fechamento de caixa com confirmação
+  - Atalhos de teclado (F5, F10, ESC)
+  - Relógio em tempo real
+  - Controle de acesso (Admin/Gerente)
+
+**Próximos passos:** Implementar Módulo 07 (Backup e Resiliência)

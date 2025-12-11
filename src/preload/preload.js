@@ -40,6 +40,14 @@ contextBridge.exposeInMainWorld('api', {
     getTodaySummary: () => ipcRenderer.invoke('sales:getTodaySummary')
   },
 
+  // Reports
+  reports: {
+    getAllSales: () => ipcRenderer.invoke('reports:getAllSales'),
+    getSummary: () => ipcRenderer.invoke('reports:getSummary'),
+    closeCashRegister: () => ipcRenderer.invoke('reports:closeCashRegister'),
+    getSalesCount: () => ipcRenderer.invoke('reports:getSalesCount')
+  },
+
   // Navigation
   navigate: (page) => ipcRenderer.invoke('navigate', page)
 });

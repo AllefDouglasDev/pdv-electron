@@ -5,6 +5,7 @@ const authService = require('./services/auth');
 const usersService = require('./services/users');
 const productsService = require('./services/products');
 const salesService = require('./services/sales');
+const reportsService = require('./services/reports');
 
 let mainWindow;
 
@@ -222,4 +223,33 @@ ipcMain.handle('sales:getTodaySummary', () => {
     return { success: false, error: 'Acesso negado' };
   }
   return salesService.getTodaySummary();
+});
+
+// IPC Handlers for Reports
+ipcMain.handle('reports:getAllSales', () => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return reportsService.getAllSales();
+});
+
+ipcMain.handle('reports:getSummary', () => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return reportsService.getSalesSummary();
+});
+
+ipcMain.handle('reports:closeCashRegister', () => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return reportsService.closeCashRegister();
+});
+
+ipcMain.handle('reports:getSalesCount', () => {
+  if (!authService.isManager()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return reportsService.getSalesCount();
 });

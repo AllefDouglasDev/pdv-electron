@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>FuxoDeCaixa - Relatórios</title>
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/reports.css">
+</head>
+<body>
+  <div class="reports-container">
+    <header class="header">
+      <div class="header-left">
+        <button id="btn-back" class="btn-back">Voltar</button>
+        <h1>Relatórios de Vendas</h1>
+      </div>
+      <div class="header-right">
+        <span id="current-datetime">--/--/---- --:--:--</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button id="btn-load" class="btn btn-primary">
+          <span class="btn-icon">&#128269;</span>
+          Carregar Vendas (F5)
+        </button>
+        <button id="btn-close-register" class="btn btn-danger" disabled>
+          <span class="btn-icon">&#128274;</span>
+          Fechar Caixa (F10)
+        </button>
+      </div>
+
+      <!-- Sales Table -->
+      <div class="table-container">
+        <table class="sales-table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Custo Unit.</th>
+              <th>Qtd</th>
+              <th>Venda Unit.</th>
+              <th>Lucro</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+          <tbody id="sales-table-body">
+            <tr class="empty-row">
+              <td colspan="6">Clique em "Carregar Vendas" para visualizar</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Summary Section -->
+      <div class="summary-section">
+        <h2>Resumo do Período</h2>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <span class="summary-label">Total Investido (Custo)</span>
+            <span id="total-cost" class="summary-value cost">R$ 0,00</span>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">Total de Vendas</span>
+            <span id="total-revenue" class="summary-value revenue">R$ 0,00</span>
+          </div>
+          <div class="summary-card highlight">
+            <span class="summary-label">Lucro Total</span>
+            <span id="total-profit" class="summary-value profit">R$ 0,00</span>
+          </div>
+        </div>
+        <div class="summary-items">
+          <span id="total-items">0 itens vendidos</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Close Register Modal -->
+    <div id="modal-close-register" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Confirmar Fechamento</h2>
+        </div>
+        <div class="modal-body">
+          <p class="modal-warning">Deseja realmente fechar o caixa?</p>
+          <div class="modal-summary">
+            <p><strong>Resumo do período:</strong></p>
+            <ul>
+              <li>Total de itens: <span id="modal-total-items">0</span></li>
+              <li>Valor total: <span id="modal-total-revenue">R$ 0,00</span></li>
+              <li>Lucro total: <span id="modal-total-profit">R$ 0,00</span></li>
+            </ul>
+          </div>
+          <p class="modal-attention">
+            <strong>ATENÇÃO:</strong> Os registros de vendas serão removidos após esta operação.
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-cancel-close" class="btn btn-secondary">Cancelar</button>
+          <button id="btn-confirm-close" class="btn btn-danger">Confirmar Fechamento</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="../scripts/reports.js"></script>
+</body>
+</html>
