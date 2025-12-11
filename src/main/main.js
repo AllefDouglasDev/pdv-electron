@@ -6,6 +6,7 @@ const usersService = require('./services/users');
 const productsService = require('./services/products');
 const salesService = require('./services/sales');
 const reportsService = require('./services/reports');
+const backupService = require('./services/backup');
 
 let mainWindow;
 
@@ -34,6 +35,18 @@ function createWindow() {
 
 app.whenReady().then(async () => {
   try {
+    // Create automatic backup before initializing database
+    const backupResult = backupService.createAutomaticBackup();
+    if (backupResult.success) {
+      if (backupResult.restored) {
+        console.log('Banco restaurado do backup:', backupResult.backupUsed);
+      } else if (backupResult.filename) {
+        console.log('Backup automático criado:', backupResult.filename);
+      }
+    } else if (backupResult.error) {
+      console.error('Erro no backup automático:', backupResult.error);
+    }
+
     const dbResult = await initializeDatabase();
     console.log('Banco de dados inicializado:', dbResult.path);
     if (dbResult.adminCreated) {
@@ -252,4 +265,67 @@ ipcMain.handle('reports:getSalesCount', () => {
     return { success: false, error: 'Acesso negado' };
   }
   return reportsService.getSalesCount();
+});
+
+// IPC Handlers for Backup
+ipcMain.handle('backup:list', () => {
+  if (!authService.isAdmin()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  try {
+    const backups = backupService.listBackups();
+    return { success: true, backups };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('backup:createManual', () => {
+  if (!authService.isAdmin()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return backupService.createManualBackup();
+});
+
+ipcMain.handle('backup:restore', (event, filename) => {
+  if (!authService.isAdmin()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  // Close database connection before restore
+  closeDatabase();
+  const result = backupService.restoreBackup(filename);
+  // Reinitialize database after restore
+  if (result.success) {
+    initializeDatabase();
+  }
+  return result;
+});
+
+ipcMain.handle('backup:delete', (event, filename) => {
+  if (!authService.isAdmin()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  return backupService.deleteBackup(filename);
+});
+
+ipcMain.handle('backup:getStats', () => {
+  if (!authService.isAdmin()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  try {
+    const stats = backupService.getBackupStats();
+    return { success: true, stats };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('backup:verifyIntegrity', (event, filename) => {
+  if (!authService.isAdmin()) {
+    return { success: false, error: 'Acesso negado' };
+  }
+  const backupDir = backupService.getBackupDir();
+  const path = require('path');
+  const filePath = path.join(backupDir, filename);
+  return backupService.verifyIntegrity(filePath);
 });

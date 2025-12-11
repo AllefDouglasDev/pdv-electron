@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>FuxoDeCaixa - Backup e Restauração</title>
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/backup.css">
+</head>
+<body>
+  <div class="backup-container">
+    <header class="header">
+      <div class="header-left">
+        <button id="btn-back" class="btn btn-back">&larr; Voltar</button>
+        <h1>Backup e Restauração</h1>
+      </div>
+      <div class="header-right">
+        <span id="user-info">Carregando...</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Stats Section -->
+      <div class="stats-section">
+        <div class="stat-card">
+          <span class="stat-label">Total de Backups</span>
+          <span class="stat-value" id="stat-total">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Backups Automáticos</span>
+          <span class="stat-value" id="stat-automatic">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Backups Manuais</span>
+          <span class="stat-value" id="stat-manual">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Espaço Utilizado</span>
+          <span class="stat-value" id="stat-size">0 B</span>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button id="btn-create-backup" class="btn btn-primary">+ Criar Backup Manual</button>
+        <button id="btn-refresh" class="btn btn-secondary">Atualizar Lista</button>
+        <span class="toolbar-hint">Dica: Backups automáticos são criados ao iniciar o sistema</span>
+      </div>
+
+      <!-- Backup List -->
+      <div class="table-container">
+        <table class="backup-table">
+          <thead>
+            <tr>
+              <th>Arquivo</th>
+              <th>Tipo</th>
+              <th>Data/Hora</th>
+              <th>Tamanho</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="backup-table-body">
+            <tr>
+              <td colspan="5" class="loading-row">Carregando backups...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="backup-info" class="backup-info">
+        <p><strong>Informações importantes:</strong></p>
+        <ul>
+          <li>Backups automáticos são criados a cada inicialização do sistema</li>
+          <li>São mantidos os últimos 30 backups automáticos</li>
+          <li>Backups manuais não são removidos automaticamente</li>
+          <li>O backup inicial (INICIAL) nunca é removido</li>
+          <li>Antes de restaurar, um backup de segurança é criado automaticamente</li>
+        </ul>
+      </div>
+    </main>
+
+    <!-- Modal for Create Backup Confirmation -->
+    <div id="create-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2>Criar Backup Manual</h2>
+          <button id="btn-close-create" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja criar um backup manual do banco de dados?</p>
+          <p class="info-text">O backup será salvo na pasta de backups com a data e hora atual.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-create" class="btn btn-secondary">Cancelar</button>
+          <button type="button" id="btn-confirm-create" class="btn btn-primary">Criar Backup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Restore Confirmation -->
+    <div id="restore-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2>Restaurar Backup</h2>
+          <button id="btn-close-restore" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja restaurar o backup:</p>
+          <p><strong id="restore-filename"></strong></p>
+          <p class="warning-text">ATENÇÃO: Esta ação substituirá TODOS os dados atuais!</p>
+          <p class="info-text">Um backup de segurança será criado antes da restauração.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-restore" class="btn btn-secondary">Cancelar</button>
+          <button type="button" id="btn-confirm-restore" class="btn btn-danger">Restaurar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Delete Confirmation -->
+    <div id="delete-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2>Excluir Backup</h2>
+          <button id="btn-close-delete" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja excluir o backup:</p>
+          <p><strong id="delete-filename"></strong></p>
+          <p class="warning-text">Esta ação não pode ser desfeita.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-delete" class="btn btn-secondary">Cancelar</button>
+          <button type="button" id="btn-confirm-delete" class="btn btn-danger">Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast" class="toast hidden">
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <script src="../scripts/backup.js"></script>
+</body>
+</html>

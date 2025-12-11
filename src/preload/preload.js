@@ -48,6 +48,16 @@ contextBridge.exposeInMainWorld('api', {
     getSalesCount: () => ipcRenderer.invoke('reports:getSalesCount')
   },
 
+  // Backup
+  backup: {
+    list: () => ipcRenderer.invoke('backup:list'),
+    createManual: () => ipcRenderer.invoke('backup:createManual'),
+    restore: (filename) => ipcRenderer.invoke('backup:restore', filename),
+    delete: (filename) => ipcRenderer.invoke('backup:delete', filename),
+    getStats: () => ipcRenderer.invoke('backup:getStats'),
+    verifyIntegrity: (filename) => ipcRenderer.invoke('backup:verifyIntegrity', filename)
+  },
+
   // Navigation
   navigate: (page) => ipcRenderer.invoke('navigate', page)
 });
