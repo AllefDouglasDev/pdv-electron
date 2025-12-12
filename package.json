@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "Sistema de Fluxo de Caixa para gerenciamento de vendas, estoque e relatórios financeiros",
   "main": "src/main/main.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "electron-builder install-app-deps",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
     "build:mac": "electron-builder --mac",
@@ -20,10 +18,12 @@
     "electron",
     "sqlite"
   ],
-  "author": "",
+  "author": {
+    "name": "Allef Douglas",
+    "email": "allef@fuxodecaixa.com"
+  },
   "license": "MIT",
   "devDependencies": {
-    "@electron/rebuild": "^4.0.2",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.0"
   },
