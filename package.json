@@ -41,13 +41,6 @@
       "src/**/*",
       "package.json"
     ],
-    "extraResources": [
-      {
-        "from": "mercado.db",
-        "to": "mercado.db",
-        "filter": ["**/*"]
-      }
-    ],
     "win": {
       "target": ["nsis"]
     },
