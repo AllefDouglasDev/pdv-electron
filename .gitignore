@@ -11,6 +11,7 @@ backups/
 # Build output
 dist/
 out/
+release/
 
 # OS files
 .DS_Store
