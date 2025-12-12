@@ -9,6 +9,7 @@ const reportsService = require('./services/reports');
 const backupService = require('./services/backup');
 const receiptService = require('./services/receipt');
 const printerService = require('./services/printer');
+const logger = require('./services/logger');
 
 let mainWindow;
 
@@ -79,20 +80,47 @@ app.on('activate', () => {
 
 // IPC Handlers for Authentication
 ipcMain.handle('auth:login', async (event, { username, password }) => {
-  return await authService.login(username, password);
+  const result = await authService.login(username, password);
+  if (result.success) {
+    logger.logLoginSuccess(result.user);
+  } else {
+    logger.logLoginFailed(username, result.error);
+  }
+  return result;
 });
 
 ipcMain.handle('auth:logout', () => {
+  const session = authService.getSession();
+  if (session) {
+    logger.logLogout(session);
+  }
   authService.logout();
   return { success: true };
 });
 
 ipcMain.handle('auth:getSession', () => {
-  return authService.getSession();
+  const wasLoggedIn = authService.isLoggedIn();
+  const session = authService.getSession();
+
+  // Check if session expired
+  if (wasLoggedIn && !session) {
+    logger.logSessionExpired({ id: null, username: 'unknown' });
+  }
+
+  return session;
 });
 
 ipcMain.handle('auth:isLoggedIn', () => {
   return authService.isLoggedIn();
+});
+
+ipcMain.handle('auth:updateActivity', () => {
+  authService.updateActivity();
+  return { success: true };
+});
+
+ipcMain.handle('auth:getSessionTimeout', () => {
+  return authService.getSessionTimeout();
 });
 
 // Navigation handler
@@ -122,21 +150,43 @@ ipcMain.handle('users:create', async (event, data) => {
   if (!authService.isAdmin()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return await usersService.create(data);
+  const result = await usersService.create(data);
+  if (result.success) {
+    const session = authService.getSession();
+    logger.logUserCreated(session, { id: result.id, username: data.username, role: data.role });
+  }
+  return result;
 });
 
 ipcMain.handle('users:update', async (event, { id, data }) => {
   if (!authService.isAdmin()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return await usersService.update(id, data);
+  const existingUser = usersService.getById(id);
+  const result = await usersService.update(id, data);
+  if (result.success && existingUser.success) {
+    const session = authService.getSession();
+    const changedFields = [];
+    if (existingUser.user.fullName !== data.fullName) changedFields.push('fullName');
+    if (existingUser.user.role !== data.role) changedFields.push('role');
+    if (existingUser.user.isActive !== data.isActive) changedFields.push('isActive');
+    if (data.password) changedFields.push('password');
+    logger.logUserUpdated(session, { id, username: existingUser.user.username }, changedFields);
+  }
+  return result;
 });
 
 ipcMain.handle('users:delete', (event, id) => {
   if (!authService.isAdmin()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return usersService.remove(id);
+  const existingUser = usersService.getById(id);
+  const result = usersService.remove(id);
+  if (result.success && existingUser.success) {
+    const session = authService.getSession();
+    logger.logUserDeleted(session, { id, username: existingUser.user.username });
+  }
+  return result;
 });
 
 // IPC Handlers for Product Management
@@ -168,21 +218,37 @@ ipcMain.handle('products:create', (event, data) => {
   if (!authService.isManager()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return productsService.create(data);
+  const result = productsService.create(data);
+  if (result.success) {
+    const session = authService.getSession();
+    logger.logProductCreated(session, { id: result.id, name: data.name, barcode: data.barcode });
+  }
+  return result;
 });
 
 ipcMain.handle('products:update', (event, { id, data }) => {
   if (!authService.isManager()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return productsService.update(id, data);
+  const result = productsService.update(id, data);
+  if (result.success) {
+    const session = authService.getSession();
+    logger.logProductUpdated(session, { id, name: data.name });
+  }
+  return result;
 });
 
 ipcMain.handle('products:delete', (event, id) => {
   if (!authService.isManager()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return productsService.remove(id);
+  const existingProduct = productsService.getById(id);
+  const result = productsService.remove(id);
+  if (result.success && existingProduct.success) {
+    const session = authService.getSession();
+    logger.logProductDeleted(session, { id, name: existingProduct.product.name });
+  }
+  return result;
 });
 
 ipcMain.handle('products:count', (event, search) => {
@@ -220,10 +286,19 @@ ipcMain.handle('sales:finalize', (event, { items, discountPercent }) => {
     return { success: false, error: 'Acesso negado' };
   }
   const session = authService.getSession();
-  if (!session || !session.userId) {
+  if (!session || !session.id) {
     return { success: false, error: 'Sessao invalida' };
   }
-  return salesService.finalizeSale(items, session.userId, discountPercent);
+  const result = salesService.finalizeSale(items, session.id, discountPercent);
+  if (result.success) {
+    const total = items.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0);
+    logger.logSaleCompleted(session, {
+      itemCount: items.length,
+      total: total * (1 - (discountPercent || 0) / 100),
+      discount: discountPercent || 0
+    });
+  }
+  return result;
 });
 
 ipcMain.handle('sales:getTodaySales', (event, userId) => {
@@ -259,7 +334,12 @@ ipcMain.handle('reports:closeCashRegister', () => {
   if (!authService.isManager()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return reportsService.closeCashRegister();
+  const result = reportsService.closeCashRegister();
+  if (result.success) {
+    const session = authService.getSession();
+    logger.logCashRegisterClosed(session, result.closedSummary);
+  }
+  return result;
 });
 
 ipcMain.handle('reports:getSalesCount', () => {
@@ -286,19 +366,26 @@ ipcMain.handle('backup:createManual', () => {
   if (!authService.isAdmin()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return backupService.createManualBackup();
+  const result = backupService.createManualBackup();
+  if (result.success) {
+    const session = authService.getSession();
+    logger.logBackupCreated(session, result.filename, 'manual');
+  }
+  return result;
 });
 
 ipcMain.handle('backup:restore', (event, filename) => {
   if (!authService.isAdmin()) {
     return { success: false, error: 'Acesso negado' };
   }
+  const session = authService.getSession();
   // Close database connection before restore
   closeDatabase();
   const result = backupService.restoreBackup(filename);
   // Reinitialize database after restore
   if (result.success) {
     initializeDatabase();
+    logger.logBackupRestored(session, filename);
   }
   return result;
 });
@@ -307,7 +394,12 @@ ipcMain.handle('backup:delete', (event, filename) => {
   if (!authService.isAdmin()) {
     return { success: false, error: 'Acesso negado' };
   }
-  return backupService.deleteBackup(filename);
+  const result = backupService.deleteBackup(filename);
+  if (result.success) {
+    const session = authService.getSession();
+    logger.logBackupDeleted(session, filename);
+  }
+  return result;
 });
 
 ipcMain.handle('backup:getStats', () => {

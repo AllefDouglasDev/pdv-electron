@@ -3,7 +3,15 @@
  * Handles CRUD operations for users
  */
 
+/* global SessionMonitor */
+
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize session monitor
+  if (typeof SessionMonitor !== 'undefined') {
+    const sessionValid = await SessionMonitor.init();
+    if (!sessionValid) return;
+  }
+
   // DOM Elements
   const userInfo = document.getElementById('user-info');
   const btnBack = document.getElementById('btn-back');

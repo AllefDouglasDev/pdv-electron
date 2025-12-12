@@ -7,7 +7,9 @@ contextBridge.exposeInMainWorld('api', {
     login: (username, password) => ipcRenderer.invoke('auth:login', { username, password }),
     logout: () => ipcRenderer.invoke('auth:logout'),
     getSession: () => ipcRenderer.invoke('auth:getSession'),
-    isLoggedIn: () => ipcRenderer.invoke('auth:isLoggedIn')
+    isLoggedIn: () => ipcRenderer.invoke('auth:isLoggedIn'),
+    updateActivity: () => ipcRenderer.invoke('auth:updateActivity'),
+    getSessionTimeout: () => ipcRenderer.invoke('auth:getSessionTimeout')
   },
 
   // User Management

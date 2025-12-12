@@ -3,6 +3,18 @@
  * Handles stock listing, searching, and editing operations
  */
 
+/* global SessionMonitor */
+
+// Initialize session monitor on load
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof SessionMonitor !== 'undefined') {
+    const sessionValid = await SessionMonitor.init();
+    if (!sessionValid) return;
+  }
+  // Continue with page initialization
+  init();
+});
+
 // State
 let currentPage = 1;
 const pageSize = 20;
@@ -504,5 +516,4 @@ function escapeHtml(text) {
 // Make functions available globally for onclick handlers
 window.selectProduct = selectProduct;
 
-// Initialize page when DOM is ready
-document.addEventListener('DOMContentLoaded', init);
+// Note: page initialization is handled by DOMContentLoaded at the top of this file

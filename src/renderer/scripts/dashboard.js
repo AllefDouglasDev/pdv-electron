@@ -3,6 +3,9 @@
  * Handles navigation, user info display, and clock
  */
 
+// Import session monitor (loaded via script tag)
+/* global SessionMonitor */
+
 document.addEventListener('DOMContentLoaded', async () => {
   const userInfo = document.getElementById('user-info');
   const btnLogout = document.getElementById('btn-logout');
@@ -10,6 +13,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const currentDate = document.getElementById('current-date');
   const navButtons = document.querySelectorAll('.nav-btn');
   const quickActionButtons = document.querySelectorAll('.quick-action-btn');
+
+  // Initialize session monitor
+  if (typeof SessionMonitor !== 'undefined') {
+    const sessionValid = await SessionMonitor.init();
+    if (!sessionValid) return;
+  }
 
   // Role labels in Portuguese
   const roleLabels = {

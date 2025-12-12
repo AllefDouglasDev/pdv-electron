@@ -1,3 +1,5 @@
+/* global SessionMonitor */
+
 // DOM Elements
 const btnBack = document.getElementById('btn-back');
 const btnCreateBackup = document.getElementById('btn-create-backup');
@@ -345,4 +347,10 @@ function showToast(message, type = 'success') {
 }
 
 // Initialize on load
-init();
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof SessionMonitor !== 'undefined') {
+    const sessionValid = await SessionMonitor.init();
+    if (!sessionValid) return;
+  }
+  init();
+});

@@ -3,6 +3,18 @@
  * Handles product CRUD operations and UI interactions
  */
 
+/* global SessionMonitor */
+
+// Initialize session monitor on load
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof SessionMonitor !== 'undefined') {
+    const sessionValid = await SessionMonitor.init();
+    if (!sessionValid) return;
+  }
+  // Continue with page initialization
+  init();
+});
+
 // State
 let currentPage = 1;
 const pageSize = 20;
@@ -521,5 +533,4 @@ function escapeHtml(text) {
 window.editProduct = editProduct;
 window.confirmDelete = confirmDelete;
 
-// Initialize page when DOM is ready
-document.addEventListener('DOMContentLoaded', init);
+// Note: page initialization is handled by DOMContentLoaded at the top of this file

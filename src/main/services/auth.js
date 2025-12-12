@@ -4,6 +4,9 @@ const { getDatabase } = require('../database');
 // Session storage (in memory)
 let currentSession = null;
 
+// Session timeout in minutes (30 minutes)
+const SESSION_TIMEOUT_MINUTES = 30;
+
 /**
  * Authenticate user with username and password
  * @param {string} username - The username
@@ -80,12 +83,14 @@ async function login(username, password) {
     }
 
     // Create session
+    const now = new Date();
     currentSession = {
       id: user.id,
       username: user.username,
       fullName: user.full_name,
       role: user.role,
-      loginTime: new Date().toISOString()
+      loginTime: now.toISOString(),
+      lastActivity: now.toISOString()
     };
 
     return {
@@ -114,10 +119,39 @@ function logout() {
 }
 
 /**
+ * Update last activity timestamp
+ */
+function updateActivity() {
+  if (currentSession) {
+    currentSession.lastActivity = new Date().toISOString();
+  }
+}
+
+/**
+ * Check if session has expired due to inactivity
+ * @returns {boolean} True if session expired
+ */
+function isSessionExpired() {
+  if (!currentSession) {
+    return true;
+  }
+
+  const lastActivity = new Date(currentSession.lastActivity);
+  const now = new Date();
+  const diffMinutes = (now - lastActivity) / 1000 / 60;
+
+  return diffMinutes > SESSION_TIMEOUT_MINUTES;
+}
+
+/**
  * Get current session
  * @returns {object|null} Current session or null if not logged in
  */
 function getSession() {
+  if (isSessionExpired()) {
+    currentSession = null;
+    return null;
+  }
   return currentSession;
 }
 
@@ -126,7 +160,19 @@ function getSession() {
  * @returns {boolean} True if logged in
  */
 function isLoggedIn() {
+  if (isSessionExpired()) {
+    currentSession = null;
+    return false;
+  }
   return currentSession !== null;
+}
+
+/**
+ * Get session timeout in minutes
+ * @returns {number} Timeout in minutes
+ */
+function getSessionTimeout() {
+  return SESSION_TIMEOUT_MINUTES;
 }
 
 /**
@@ -166,5 +212,8 @@ module.exports = {
   isLoggedIn,
   hasRole,
   isAdmin,
-  isManager
+  isManager,
+  updateActivity,
+  isSessionExpired,
+  getSessionTimeout
 };

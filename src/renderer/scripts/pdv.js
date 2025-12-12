@@ -2,6 +2,8 @@
  * PDV (Point of Sale) page logic
  */
 
+/* global SessionMonitor */
+
 // State
 let cart = [];
 let selectedItemIndex = -1;
@@ -40,6 +42,12 @@ let lastSaleData = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize session monitor
+  if (typeof SessionMonitor !== 'undefined') {
+    const sessionValid = await SessionMonitor.init();
+    if (!sessionValid) return;
+  }
+
   await checkSession();
   startClock();
   setupEventListeners();
