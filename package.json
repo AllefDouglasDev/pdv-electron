@@ -17,7 +17,7 @@
     "sqlite"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@electron/rebuild": "^4.0.2",
     "electron": "^39.2.6"
